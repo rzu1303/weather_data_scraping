@@ -13,16 +13,10 @@ from selenium.webdriver.support import expected_conditions as EC
 import config
 
 
-# temperature = []
-# humidity = []
-# precip = []
-# wind = []
-
 def read_weather(link, days):
     weather_q = queue.Queue(maxsize=days)
     website = link
     d = days
-    # print(link)
 
     # print(pyautogui.size())
     # Size(width=1366, height=768)
@@ -56,12 +50,6 @@ def read_weather(link, days):
     except Exception as e:
         print(f"Could not handle cookies {e} {traceback.format_exc()}")   
        
-    # temperature = queue.Queue()
-    # humidity = queue.Queue()
-    # precip = queue.Queue()
-    # wind = queue.Queue()
-    # ### dictionary based queue
-    # weather_q = queue.Queue(maxsize=days)
     try:
         driver.execute_script("window.scrollBy(0,document.body.scrollHeight)")
         driver.implicitly_wait(5)
