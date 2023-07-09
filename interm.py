@@ -17,9 +17,9 @@ def read_weather(city, start_date, end_date):
 
     date1 = datetime.strptime(iend_date, '%Y-%m-%d')
     date2 = datetime.strptime(istart_date, '%Y-%m-%d')
-    time_difference = date1 - date2
-    number_of_days = time_difference.days
-    number_of_days = number_of_days + 1
+    # time_difference = date1 - date2
+    # number_of_days = time_difference.days
+    # number_of_days = number_of_days + 1
 
     ## Creating link
     # website = "https://www.visualcrossing.com/weather/weather-data-services/dhaka/metric/2023-05-28/2023-06-01"
@@ -31,16 +31,17 @@ def read_weather(city, start_date, end_date):
 
     link = f"{base_url}{city}/metric/{start_date}/{end_date}"
 
-    global data_ex
-    data_ex = queue.Queue()
-    data_q = queue.Queue(maxsize=number_of_days)
+    # global data_ex
+    # data_ex = queue.Queue()
+    # data_q = queue.Queue(maxsize=config.n_days)
 
-    data_q = w_data.read_weather(link,number_of_days)
+    # data_q = w_data.read_weather(link)
+    w_data.read_weather(link)
 
-    for item in list(data_q.queue):
-        data_ex.put(item)
+    for item in list(config.w_data.queue):
+        config.w_data.put(item)
 
-    return (data_q,number_of_days)
+    # return (data_q)
 
 
 
@@ -55,9 +56,9 @@ def write_weather():
     with open("Weather_data_test1.csv", "w", encoding="utf-8") as fp:   
         writer = csv.DictWriter(fp, fieldnames=["temperature", "humidity", "precip", "wind"])
         writer.writeheader()
-        while not data_ex.empty():
+        while not config.w_data.empty():
 
-            data = data_ex.get()
+            data = config.w_data.get()
             writer.writerow(data)
 
             

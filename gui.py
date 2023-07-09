@@ -35,6 +35,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.tableWidget_data = QtWidgets.QTableWidget(self.horizontalLayoutWidget_2)
+        self.tableWidget_data.setMinimumSize(QtCore.QSize(777, 0))
+        self.tableWidget_data.setMaximumSize(QtCore.QSize(777, 16777215))
         self.tableWidget_data.setStyleSheet("background-color: rgb(240, 240, 240);\n"
 "alternate-background-color: rgb(204, 204, 204);")
         self.tableWidget_data.setObjectName("tableWidget_data")
@@ -216,13 +218,3 @@ class Ui_MainWindow(object):
         self.pushButton_enter.setText(_translate("MainWindow", "ENTER"))
         self.label_cancel.setText(_translate("MainWindow", "Press \'CANCEL\' to stop process"))
         self.pushButton_cancel.setText(_translate("MainWindow", "CANCEL"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QWidget()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

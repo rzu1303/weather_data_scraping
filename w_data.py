@@ -13,10 +13,10 @@ from selenium.webdriver.support import expected_conditions as EC
 import config
 
 
-def read_weather(link, days):
-    weather_q = queue.Queue(maxsize=days)
+def read_weather(link):
+    # weather_q = queue.Queue(maxsize=config.n_days)
     website = link
-    d = days
+    # d = config.n_days
 
     # print(pyautogui.size())
     # Size(width=1366, height=768)
@@ -70,14 +70,16 @@ def read_weather(link, days):
 
         #### Queue
         # weather_q = queue.Queue(maxsize=days)
-        with weather_q.mutex:
-            weather_q.queue.clear()
-        for i in range(days):
+        with config.w_data.mutex:
+            config.w_data.queue.clear()
+        # config.p_bar = 0
+        for i in range(config.n_days):
             if config.cancel:
                 print("Download Cancelled")
                 break
+            # config.p_bar += 1
             mtemp = temp[i].split(" ")
-            weather_q.put(
+            config.w_data.put(
                 {
                     'temperature': mtemp[3],
                     'humidity': mtemp[8],
@@ -91,7 +93,7 @@ def read_weather(link, days):
     except Exception as e:
         print(f"Unable to download data {e} {traceback.format_exc()}")
     # return(temperature, humidity, precip, wind)
-    return weather_q
+    # return weather_q
      
         
 

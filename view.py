@@ -31,15 +31,24 @@ class Main(Ui_MainWindow):
         #### try
         self.progressBar.setValue(0)
 
+        self.tableWidget_data.show()
+
     def stop_downloading(self):
         config.cancel = True
+        config.p_bar = 0
+        config.n_days = 1
+        self.populate_table()
+        self.tableWidget_data.clear()
+        self.dateEdit_from.setDate(QtCore.QDate(2000, 1, 1))
+        self.dateEdit_to.setDate(QtCore.QDate(2000, 1, 1))
 
     def populate_table(self):
         # self.tableWidget_data.clear()
         # self.dateEdit_from.setDate(QtCore.QDate(2020, 1, 1))
         # self.dateEdit_to.setDate(QtCore.QDate(2020, 1, 1))
-        table = self.tableWidget_data
-        table.setRowCount(0)
+        self.tableWidget_data.setRowCount(0)
+        self.progressBar.setValue(0)
+        config.p_bar = 0
 
 
     # def populate_form(self):
@@ -48,20 +57,21 @@ class Main(Ui_MainWindow):
     def read_weather(self):
 
         config.cancel = False
-        global d
+        # global d
 
-        w_data = queue.Queue()
+        # w_data = queue.Queue()
         city = self.comboBox_city.currentText()
         start_date = self.dateEdit_from.date()
         end_date = self.dateEdit_to.date()
-        (w_data, d ) = interm.read_weather(city, start_date.toString('yyyy-MM-d'), end_date.toString('yyyy-MM-d'))
-        print("test")
+        # (w_data) = interm.read_weather(city, start_date.toString('yyyy-MM-d'), end_date.toString('yyyy-MM-d'))
+        interm.read_weather(city, start_date.toString('yyyy-MM-d'), end_date.toString('yyyy-MM-d'))
+        # config.w_data
         # self.timer.timeout.connect(self.progressbar)
         # self.timer.start(100)
-        print("test1")
+
         # self.populate_table()
-        self.show_data(w_data, d)
-        print("test2")
+        # self.show_data(w_data)
+
         # self.timer.timeout.connect(self.progressbar)
         # self.timer.start(1000)
         # self.timer.stop()
@@ -85,41 +95,51 @@ class Main(Ui_MainWindow):
         # self.progressBar.setValue(0)
         # self.progressBar.setMinimum(0)
         # self.progressBar.setMaximum(100)
-        time.sleep(10)
-        print("test3")
         total_items = 100
-        p = (config.p_bar*100)/n_days
+        p = (config.p_bar*100)/config.n_days
         self.progressBar.setValue(p)
         print("config.p_bar")
         print(config.p_bar)
-        print("n_days")
-        print(n_days)
-        if config.p_bar == n_days:
+        print("config.n_days")
+        print(config.n_days)
+        ##### could be controlled by var within config
+        if config.p_bar == config.n_days:
             self.timer.stop()
 
         
 
-    def show_data(self,w_data, d):
+    def show_data(self):
         # data_q = list(w_data)
-        t_day = d
+        t_day = config.n_days
         # print(data_q.get())
-        table = self.tableWidget_data
-        table.setRowCount(t_day)
-        table.setColumnCount(4)
-        table.setHorizontalHeaderLabels(["temperature", "humidity", "precip", "wind"])
+        print("show_data function is running")
+        self.tableWidget_data.setRowCount(t_day)
+        self.tableWidget_data.setColumnCount(4)
+        self.tableWidget_data.setHorizontalHeaderLabels(["temperature", "humidity", "precip", "wind"])
 
-   
+        
         for i in range(t_day):
-            config.p_bar += 1
-            print(config.p_bar)
+            # config.p_bar = 0
+            # config.p_bar += 1
+            # print(config.p_bar)
+            flag = 0
+            flagt = 0
+            
             if config.cancel:
                 self.populate_table()
             # print("Download Cancelled")
             # populate form will be called
                 break 
+            if config.w_data.empty():
+                break
             else:
-                if not w_data.empty():
-                    data = w_data.get()
+                if not config.w_data.empty():
+
+                    data = config.w_data.get()
+                    config.p_bar += 1
+                    flagt += 1
+                    
+
                     temperature = data["temperature"]
                     humidity = data["humidity"]
                     precip = data["precip"]
@@ -128,23 +148,39 @@ class Main(Ui_MainWindow):
                     item_h = QTableWidgetItem(humidity)
                     item_p = QTableWidgetItem(precip)
                     item_w = QTableWidgetItem(wind)
+                    self.tableWidget_data.setItem(config.j, 0, item_t)
+                    self.tableWidget_data.setItem(config.j, 1, item_h)
+                    self.tableWidget_data.setItem(config.j, 2, item_p)
+                    self.tableWidget_data.setItem(config.j, 3, item_w)
+                    # QApplication.processEvents()
+                    config.j += 1
+                    self.tableWidget_data.resizeColumnToContents(0)
+                    self.tableWidget_data.resizeColumnToContents(3)
 
-                    table.setItem(i, 0, item_t)
-                    table.setItem(i, 1, item_h)
-                    table.setItem(i, 2, item_p)
-                    table.setItem(i, 3, item_w)
+
+                    if  config.w_data.empty():
+                        flag = 1
+
+                if flagt % 2 == 0:
+                    break
 
                 else:
                     break
+        if flag == 1:
+            config.j = 0
+            self.timer.stop()                
+        # self.tableWidget_data.repaint()
 
     def start_thread(self):
         self.populate_table()
         self.day_cal()
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.progressbar)
-        self.timer.start(10)
+        self.timer.start(1000)
+        self.timer.timeout.connect(self.show_data)
+        self.timer.start(100)
         read_w_thread = threading.Thread(target=self.read_weather,daemon=True, args=[])
-
+        # self.populate_table()
         read_w_thread.start()
 
     def day_cal(self):
@@ -156,8 +192,7 @@ class Main(Ui_MainWindow):
         date2 = datetime.strptime(s_date, '%Y-%m-%d')
         time_difference = date1 - date2
         number_of_days = time_difference.days
-        global n_days
-        n_days = number_of_days + 1        
+        config.n_days = number_of_days + 1        
 
     # def stop_thread(self):
     #     self.read_w_thread.downloading = False

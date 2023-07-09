@@ -51,6 +51,18 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QTableWidget" name="tableWidget_data">
+        <property name="minimumSize">
+         <size>
+          <width>777</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>777</width>
+          <height>16777215</height>
+         </size>
+        </property>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(240, 240, 240);
 alternate-background-color: rgb(204, 204, 204);</string>
