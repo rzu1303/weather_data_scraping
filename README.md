@@ -22,7 +22,8 @@ Supports exporting the data to a CSV file for external use.
 
 
 
-## Technologies Used: PyQt5, Threading, Selenium, QtWidget, Qt Designer.
+## Technologies Used:
+PyQt5, Threading, Selenium, QtWidget, Qt Designer.
 
 
 
