@@ -1,13 +1,13 @@
-Project Name: Weather Data Scraper
+# Project Name: Weather Data Scraper
 
 
-Overview
+## Overview
 
 
 The Weather Data Scraper is a Python application built with PyQt and Selenium to scrape weather data from a website. It allows users to specify a city and date range to retrieve weather information such as temperature, humidity, precipitation, and wind speed. The scraped data can be exported to a CSV file for further analysis.
 
 
-Features
+## Features
 
 
 Scrapes weather data from a website using Selenium.
@@ -22,11 +22,11 @@ Supports exporting the data to a CSV file for external use.
 
 
 
-Technologies Used: PyQt5, Threading, Selenium, QtWidget, Qt Designer.
+## Technologies Used: PyQt5, Threading, Selenium, QtWidget, Qt Designer.
 
 
 
-Installation and Usage 
+## Installation and Usage 
 
 Clone the repository to your local machine, navigate to the project directory then run the 'view.py' file to launch the GUI application.
 
